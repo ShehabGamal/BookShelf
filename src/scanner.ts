@@ -50,13 +50,16 @@ export function walkDirectoryForBooks(dirPath: string): ScannedFileInfo[] {
   }
 
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  const subDirs: string[] = [];
+
+  // Process files in the current directory first before descending into subdirectories
   for (const entry of entries) {
     if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist') {
       continue;
     }
     const fullPath = path.join(dirPath, entry.name);
     if (entry.isDirectory()) {
-      results.push(...walkDirectoryForBooks(fullPath));
+      subDirs.push(fullPath);
     } else if (entry.isFile()) {
       const ext = path.extname(entry.name).toLowerCase();
       if (SUPPORTED_EXTENSIONS.has(ext)) {
@@ -73,6 +76,10 @@ export function walkDirectoryForBooks(dirPath: string): ScannedFileInfo[] {
         });
       }
     }
+  }
+
+  for (const sub of subDirs) {
+    results.push(...walkDirectoryForBooks(sub));
   }
 
   return results;
@@ -293,8 +300,14 @@ export async function inspectSingleFile(file: ScannedFileInfo): Promise<{
 
   // If PDF, attempt pdf-parse for text extraction of pages 1-2
   if (file.format === 'pdf') {
+    const origLog = console.log;
+    const origWarn = console.warn;
     try {
+      console.log = () => {};
+      console.warn = () => {};
       const parsed = await pdfParse(buffer, { max: 2 });
+      console.log = origLog;
+      console.warn = origWarn;
       if (parsed?.info) {
         if (!title && parsed.info.Title && typeof parsed.info.Title === 'string') {
           title = parsed.info.Title.trim();
@@ -318,6 +331,8 @@ export async function inspectSingleFile(file: ScannedFileInfo): Promise<{
           .join(' ');
       }
     } catch {
+      console.log = origLog;
+      console.warn = origWarn;
       // Fallback to extracting readable text streams from raw buffer
     }
   }
