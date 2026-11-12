@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookShelf — Local PDF Library Organizer & Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Top Header Bar -->
+  <header class="app-surface border-b px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-30">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg btn-accent shadow-sm">
+        BS
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-lg font-bold tracking-tight">BookShelf</h1>
+          <span class="text-xs px-2 py-0.5 rounded-full badge-accent font-mono">LOCAL-FIRST v1.0</span>
+        </div>
+        <p class="text-xs" style="color: var(--text-secondary)">
+          Local PDF &amp; eBook Inspector, Categorizer &amp; Atomic Organizer
+        </p>
+      </div>
+    </div>
+
+    <!-- Search & Theme Controls -->
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="relative">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search title, author, ISBN, format..."
+          class="app-input rounded-lg pl-3.5 pr-8 py-1.5 text-sm w-64 md:w-80"
+        />
+      </div>
+
+      <!-- Format Filter -->
+      <select id="formatFilter" class="app-input rounded-lg px-3 py-1.5 text-sm">
+        <option value="ALL">All Formats</option>
+        <option value="pdf">PDF Only</option>
+        <option value="epub">EPUB Only</option>
+        <option value="mobi">MOBI Only</option>
+        <option value="djvu">DJVU Only</option>
+      </select>
+
+      <!-- Language Filter -->
+      <select id="langFilter" class="app-input rounded-lg px-3 py-1.5 text-sm">
+        <option value="ALL">All Languages</option>
+        <option value="EN">EN (English)</option>
+        <option value="FR">FR (French)</option>
+        <option value="AR">AR (Arabic)</option>
+        <option value="ES">ES (Spanish)</option>
+        <option value="DE">DE (German)</option>
+      </select>
+
+      <!-- Multi-Theme Engine Switcher -->
+      <div class="flex items-center gap-1.5">
+        <label for="themeSelector" class="text-xs font-medium" style="color: var(--text-secondary)">Theme:</label>
+        <select id="themeSelector" class="app-input rounded-lg px-3 py-1.5 text-sm font-medium cursor-pointer">
+          <option value="dark">Dark (Midnight)</option>
+          <option value="light">Light (Daylight)</option>
+          <option value="sepia">Sepia (Parchment)</option>
+          <option value="cyberpunk">Cyberpunk / OLED</option>
+          <option value="slate">Slate</option>
+          <option value="emerald">Emerald</option>
+          <option value="high-contrast">High Contrast</option>
+          <option value="system">System Auto</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Scan & Organize Control Bar -->
+  <section class="app-surface border-b px-6 py-3.5">
+    <form id="scanForm" class="flex flex-wrap items-end gap-3">
+      <div class="flex-1 min-w-[220px]">
+        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">
+          Source Folder Path (Scan Input)
+        </label>
+        <input
+          id="sourceDirInput"
+          type="text"
+          required
+          placeholder="C:\Users\...\Downloads"
+          class="app-input w-full rounded-lg px-3 py-1.5 text-xs font-mono"
+        />
+      </div>
+
+      <div class="flex-1 min-w-[220px]">
+        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">
+          Destination Library Root (Categorized Output)
+        </label>
+        <input
+          id="destDirInput"
+          type="text"
+          required
+          placeholder="C:\Users\...\Library"
+          class="app-input w-full rounded-lg px-3 py-1.5 text-xs font-mono"
+        />
+      </div>
+
+      <div class="flex items-center gap-4 pb-1">
+        <label class="flex items-center gap-1.5 text-xs cursor-pointer select-none">
+          <input id="dryRunToggle" type="checkbox" class="rounded accent-sky-400 w-4 h-4" />
+          <span class="font-medium">Dry-Run Mode</span>
+        </label>
+
+        <label class="flex items-center gap-1.5 text-xs cursor-pointer select-none">
+          <input id="cleanEmptyToggle" type="checkbox" class="rounded accent-sky-400 w-4 h-4" />
+          <span class="font-medium">Clean Empty Folders</span>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="submit"
+          id="scanSubmitBtn"
+          class="btn-accent px-4 py-2 rounded-lg text-xs font-bold tracking-wide shadow-sm cursor-pointer"
+        >
+          Scan &amp; Organize
+        </button>
+
+        <button
+          type="button"
+          id="generateDemoBtn"
+          class="btn-secondary px-3 py-2 rounded-lg text-xs font-medium cursor-pointer"
+          title="Generate sample PDF/EPUB/MOBI/DJVU files to test scanning, sibling aggregation, and translations"
+        >
+          + Generate Sample Books
+        </button>
+
+        <button
+          type="button"
+          id="undoLastBtn"
+          class="btn-secondary px-3 py-2 rounded-lg text-xs font-medium cursor-pointer"
+          title="Reverse the last batch of atomic file moves"
+        >
+          Undo Last Move
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Main Workspace Layout -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Left Category Browser Sidebar -->
+    <aside class="w-72 app-surface border-r flex flex-col shrink-0 overflow-y-auto">
+      <div class="p-4 border-b" style="border-color: var(--border-color)">
+        <div class="text-xs font-bold uppercase tracking-wider mb-2.5" style="color: var(--text-muted)">
+          Library Views
+        </div>
+        <nav class="space-y-1" id="specialViewsNav">
+          <button
+            data-view="all"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left sidebar-item-active cursor-pointer"
+          >
+            <span>All Books</span>
+            <span id="countAllBooks" class="px-2 py-0.5 rounded-full text-[11px] font-mono app-input">0</span>
+          </button>
+          <button
+            data-view="pending-covers"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left cursor-pointer"
+          >
+            <span>Pending Cover Approvals</span>
+            <span id="countPendingCovers" class="px-2 py-0.5 rounded-full text-[11px] font-mono app-input">0</span>
+          </button>
+          <button
+            data-view="translations"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left cursor-pointer"
+          >
+            <span>Translation Variants</span>
+            <span id="countTranslations" class="px-2 py-0.5 rounded-full text-[11px] font-mono app-input">0</span>
+          </button>
+          <button
+            data-view="duplicates"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left cursor-pointer"
+          >
+            <span>SHA-256 Duplicates</span>
+            <span id="countDuplicates" class="px-2 py-0.5 rounded-full text-[11px] font-mono app-input">0</span>
+          </button>
+          <button
+            data-view="undo-history"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left cursor-pointer"
+          >
+            <span>Atomic Undo Journal</span>
+            <span id="countUndoBatches" class="px-2 py-0.5 rounded-full text-[11px] font-mono app-input">0</span>
+          </button>
+          <button
+            data-view="rules-editor"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-left cursor-pointer"
+          >
+            <span>Rules &amp; Taxonomy Engine</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono badge-accent">CONFIG</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Folder Hierarchy Category Tree -->
+      <div class="p-4 flex-1">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted)">
+            Disk Hierarchy
+          </span>
+          <span class="text-[11px] font-mono" style="color: var(--text-muted)">Cat / Subcat</span>
+        </div>
+        <div id="categoryTreeContainer" class="space-y-1.5 text-xs">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Status Toast / Notification Banner -->
+      <div id="statusBanner" class="hidden rounded-xl p-4 border app-card flex items-center justify-between gap-4">
+        <div id="statusBannerText" class="text-sm font-medium"></div>
+        <button id="closeBannerBtn" class="text-xs px-2.5 py-1 rounded btn-secondary cursor-pointer">Dismiss</button>
+      </div>
+
+      <!-- Dry-Run Report Panel (Shown when Dry-Run Scan finishes) -->
+      <div id="dryRunPanel" class="hidden rounded-xl p-5 app-card space-y-4">
+        <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color)">
+          <div>
+            <span class="text-xs px-2 py-0.5 rounded badge-accent font-mono uppercase">DRY-RUN PREVIEW</span>
+            <h2 class="text-base font-bold mt-1">Proposed Categorization &amp; Atomic File Moves</h2>
+            <p class="text-xs" style="color: var(--text-secondary)">
+              No files were modified on disk. Uncheck "Dry-Run Mode" and click "Scan &amp; Organize" to commit these moves.
+            </p>
+          </div>
+          <button id="closeDryRunBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">
+            Close Preview
+          </button>
+        </div>
+        <div id="dryRunTableContainer" class="overflow-x-auto text-xs"></div>
+      </div>
+
+      <!-- Active View Header -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 id="activeViewTitle" class="text-xl font-bold">All Books</h2>
+          <p id="activeViewSubtitle" class="text-xs" style="color: var(--text-secondary)">
+            Showing local books indexed on hardware
+          </p>
+        </div>
+      </div>
+
+      <!-- Books Grid Container -->
+      <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Auxiliary Panel for Duplicates / Undo History / Rules Editor -->
+      <div id="auxiliaryViewContainer" class="hidden"></div>
+    </main>
+  </div>
+
+  <!-- Permission-Gated Cover Approval Modal -->
+  <div
+    id="coverModal"
+    class="fixed inset-0 bg-black/75 hidden items-center justify-center p-4 z-50"
+  >
+    <div class="app-card rounded-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color)">
+        <div>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded badge-accent">PERMISSION-GATED COVER FETCH</span>
+          <h3 class="text-base font-bold mt-1" id="coverModalBookTitle">Approve Cover Download</h3>
+        </div>
+        <button id="closeCoverModalBtn" class="btn-secondary px-2.5 py-1 rounded text-xs cursor-pointer">✕</button>
+      </div>
+
+      <div class="text-xs space-y-2 leading-relaxed" style="color: var(--text-secondary)">
+        <p id="coverModalPromptText" class="font-mono p-3 rounded-lg app-input text-xs break-all"></p>
+        <p>
+          BookShelf never downloads remote cover images without your explicit permission. You may approve the candidate URL above, enter a custom URL, or reject it.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">
+          Candidate or Custom Cover URL:
+        </label>
+        <input
+          id="coverModalUrlInput"
+          type="url"
+          class="app-input w-full rounded-lg px-3 py-2 text-xs font-mono"
+        />
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button
+          type="button"
+          id="rejectCoverBtn"
+          class="btn-secondary px-4 py-2 rounded-lg text-xs font-medium cursor-pointer"
+        >
+          Decline (N)
+        </button>
+        <button
+          type="button"
+          id="approveCoverBtn"
+          class="btn-accent px-4 py-2 rounded-lg text-xs font-bold cursor-pointer"
+        >
+          Approve &amp; Download Cover (y)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recategorize / Book Inspector Modal -->
+  <div
+    id="inspectModal"
+    class="fixed inset-0 bg-black/75 hidden items-center justify-center p-4 z-50"
+  >
+    <div class="app-card rounded-2xl max-w-xl w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color)">
+        <h3 class="text-base font-bold" id="inspectModalTitle">Book Details &amp; Relocation</h3>
+        <button id="closeInspectModalBtn" class="btn-secondary px-2.5 py-1 rounded text-xs cursor-pointer">✕</button>
+      </div>
+      <div id="inspectModalContent" class="space-y-3 text-xs"></div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
