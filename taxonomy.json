@@ -1,0 +1,179 @@
+{
+  "Chemistry": {
+    "Organic Chemistry": [
+      "organic chemistry",
+      "hydrocarbons",
+      "stereochemistry",
+      "synthesis",
+      "functional groups",
+      "polymer",
+      "carbonyl"
+    ],
+    "Inorganic & Physical Chemistry": [
+      "inorganic chemistry",
+      "physical chemistry",
+      "electrochemistry",
+      "catalysis",
+      "transition metals",
+      "crystallography",
+      "principles of chemistry",
+      "general chemistry",
+      "chemical principles"
+    ],
+    "Biochemistry": [
+      "biochemistry",
+      "enzymes",
+      "metabolism",
+      "amino acids",
+      "proteins",
+      "nucleic acids"
+    ],
+    "Analytical Chemistry": [
+      "analytical chemistry",
+      "spectroscopy",
+      "chromatography",
+      "mass spectrometry",
+      "titration"
+    ]
+  },
+  "Physics": {
+    "Thermodynamics": [
+      "thermodynamics",
+      "entropy",
+      "statistical mechanics",
+      "heat transfer",
+      "thermal physics",
+      "kinetic theory"
+    ],
+    "Quantum Mechanics": [
+      "quantum mechanics",
+      "quantum physics",
+      "wavefunction",
+      "schrodinger",
+      "quantum field",
+      "particle physics"
+    ],
+    "Classical Mechanics & Electromagnetism": [
+      "classical mechanics",
+      "electrodynamics",
+      "electromagnetism",
+      "optics",
+      "relativity",
+      "newtonian"
+    ],
+    "Astrophysics & Cosmology": [
+      "astrophysics",
+      "cosmology",
+      "astronomy",
+      "black holes",
+      "stellar"
+    ]
+  },
+  "Computer Science": {
+    "Artificial Intelligence & Machine Learning": [
+      "machine learning",
+      "deep learning",
+      "neural networks",
+      "artificial intelligence",
+      "natural language processing",
+      "computer vision",
+      "reinforcement learning"
+    ],
+    "Algorithms & Data Structures": [
+      "algorithms",
+      "data structures",
+      "computational complexity",
+      "graph theory",
+      "dynamic programming",
+      "combinatorics"
+    ],
+    "Systems & Architecture": [
+      "operating systems",
+      "distributed systems",
+      "computer architecture",
+      "compilers",
+      "networking",
+      "linux kernel",
+      "database internals"
+    ],
+    "Software Engineering": [
+      "software architecture",
+      "clean code",
+      "design patterns",
+      "refactoring",
+      "typescript",
+      "rust",
+      "python programming"
+    ]
+  },
+  "Mathematics": {
+    "Calculus & Analysis": [
+      "calculus",
+      "real analysis",
+      "complex analysis",
+      "differential equations",
+      "fourier",
+      "measure theory"
+    ],
+    "Linear Algebra & Abstract Algebra": [
+      "linear algebra",
+      "matrix analysis",
+      "abstract algebra",
+      "group theory",
+      "rings and fields",
+      "topology"
+    ],
+    "Probability & Statistics": [
+      "probability",
+      "statistics",
+      "stochastic processes",
+      "bayesian",
+      "regression"
+    ]
+  },
+  "Engineering": {
+    "Electrical & Electronics": [
+      "circuits",
+      "microelectronics",
+      "signal processing",
+      "embedded systems",
+      "vlsi",
+      "control systems"
+    ],
+    "Mechanical & Aerospace": [
+      "fluid mechanics",
+      "aerodynamics",
+      "materials science",
+      "robotics",
+      "finite element"
+    ]
+  },
+  "Literature & Philosophy": {
+    "Classic Literature": [
+      "novel",
+      "fiction",
+      "poetry",
+      "anthology",
+      "odyssey",
+      "shakespeare",
+      "literature"
+    ],
+    "Philosophy & Ethics": [
+      "philosophy",
+      "epistemology",
+      "metaphysics",
+      "ethics",
+      "logic",
+      "existentialism",
+      "stoicism"
+    ],
+    "History & Civilization": [
+      "history",
+      "civilization",
+      "archaeology",
+      "world war",
+      "antiquity",
+      "empire"
+    ]
+  }
+}

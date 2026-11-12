@@ -1,0 +1,17 @@
+{
+  "description": "Custom regex rules for automated book categorization. Syntax: '<field> =~ /<pattern>/<flags> -> <Category>/<Subcategory>'",
+  "rules": [
+    "title =~ /thermodynamics|entropy|statistical mechanics|heat transfer/i -> Physics/Thermodynamics",
+    "title =~ /quantum|schrodinger|qft|particle physics/i -> Physics/Quantum Mechanics",
+    "title =~ /organic chemistry|stereochemistry|synthesis/i -> Chemistry/Organic Chemistry",
+    "title =~ /biochemistry|enzyme|metabolism/i -> Chemistry/Biochemistry",
+    "title =~ /principles.*chem|general chemistry|inorganic chemistry|kacem|مبادئ الكيمياء|chimie/i -> Chemistry/Inorganic & Physical Chemistry",
+    "title =~ /machine learning|deep learning|neural network|artificial intelligence/i -> Computer Science/Artificial Intelligence & Machine Learning",
+    "title =~ /algorithm|data structure|graph theory/i -> Computer Science/Algorithms & Data Structures",
+    "title =~ /operating system|distributed system|database internal|compiler/i -> Computer Science/Systems & Architecture",
+    "title =~ /clean code|design pattern|software architecture|refactoring/i -> Computer Science/Software Engineering",
+    "title =~ /linear algebra|matrix|abstract algebra/i -> Mathematics/Linear Algebra & Abstract Algebra",
+    "title =~ /calculus|differential equation|real analysis/i -> Mathematics/Calculus & Analysis",
+    "title =~ /probability|statistics|stochastic|bayesian/i -> Mathematics/Probability & Statistics"
+  ]
+}

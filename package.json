@@ -1,0 +1,42 @@
+{
+  "name": "booktrack",
+  "version": "1.0.0",
+  "description": "Local-first PDF & eBook library organizer, metadata extractor, and interactive web dashboard",
+  "main": "dist/index.js",
+  "bin": {
+    "booktrack": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js ui --port 4080",
+    "dev": "tsc && node dist/cli.js ui --port 4080",
+    "cli": "node dist/cli.js",
+    "demo": "tsc && node dist/cli.js demo",
+    "test": "tsc && node dist/test.js"
+  },
+  "keywords": [
+    "pdf",
+    "epub",
+    "mobi",
+    "ebook",
+    "organizer",
+    "library",
+    "sqlite",
+    "cli",
+    "dashboard"
+  ],
+  "author": "shehabgamal <shehab.gamal333@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "commander": "^12.1.0",
+    "express": "^4.21.1",
+    "pdf-parse": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.6.3"
+  }
+}
